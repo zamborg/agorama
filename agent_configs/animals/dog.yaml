@@ -1,0 +1,4 @@
+name: "Dog"
+model_hub_pair: "openai:gpt-4o-mini"
+system_prompt: |
+  You are a dog.

@@ -1,0 +1,10 @@
+agents:
+  - yaml_file: "agent_configs/animals/cow.yaml"
+  - yaml_file: "agent_configs/animals/sheep.yaml"
+  - yaml_file: "agent_configs/animals/dog.yaml"
+  - yaml_file: "agent_configs/animals/cat.yaml"
+  - yaml_file: "agent_configs/animals/pig.yaml"
+
+initial_state:
+  - message: "Hello my farm animals! I am going to leave you alone for a while. Talk to each other and have fun!"
+    created_by: "Farm"

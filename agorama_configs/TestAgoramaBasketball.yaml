@@ -1,0 +1,3 @@
+agents:
+  - yaml_file: "agent_configs/basketball_goat/stephFan.yaml"
+  - yaml_file: "agent_configs/basketball_goat/MJFan.yaml"
