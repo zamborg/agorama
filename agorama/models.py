@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from dataclasses import field
+from dataclasses import field, asdict
 from datetime import datetime, timezone
 from typing import List, Optional
 import yaml
@@ -51,6 +51,17 @@ class ChatRoom:
     def __str__(self):
         return "\n".join(str(message) for message in self.messages)
     
+    def to_yaml(self, file_name: str):
+        with open(file_name, "w") as f:
+            yaml.dump(asdict(self), f)
+
+    @staticmethod
+    def from_yaml(yaml_file: str) -> "ChatRoom":
+        yaml_data: dict = yaml.safe_load(open(yaml_file))
+        return ChatRoom(
+            room_name=yaml_data["room_name"],
+            messages=[ChatMessage(**message) for message in yaml_data["messages"]]
+        )
 
 class BaseAgent(ABC):
     """
