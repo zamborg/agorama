@@ -1,13 +1,15 @@
 from abc import ABC, abstractmethod
 from dataclasses import field, asdict
 from datetime import datetime, timezone
-from typing import List, Optional
+from typing import List, Optional, Union
 import yaml
 
 from pydantic.dataclasses import dataclass
 from pydantic_ai import Agent
 from pydantic_ai.models import KnownModelName
 from pydantic_ai.messages import ModelMessage, ModelResponse, TextPart
+
+from litellm import acompletion
 
     
 
@@ -101,7 +103,46 @@ class YamlAgent(BaseAgent):
         """
         raise NotImplementedError("Subclasses must implement this method")
     
-class LMAgent(YamlAgent):
+
+class LiteLLMAgent(YamlAgent):
+    """
+    An agent that uses a language model to generate a response. Maintains a chat history of its own messages.
+    MUST HAVE:
+        - name: str
+        - model_hub_pair: str
+    SHOULD HAVE:
+        - system_prompt: str
+        - chat_history_length: int
+    """
+    def __init__(self, yaml_file: str, name: Optional[str] = None, model_hub_pair: Optional[KnownModelName] = None):
+        super().__init__(yaml_file, name)
+        self.model_hub_pair = model_hub_pair or getattr(self, "model_hub_pair") # you best hope you're right buddy
+        self.model_hub_pair = self.model_hub_pair.replace(":", "/") # replace with a / for litellm
+        self.chat_history_length = getattr(self, "chat_history_length", 10)
+        self.system_prompt = getattr(self, "system_prompt", None)
+        self.chat_history: List[ModelMessage] = []
+
+    async def chat(self, input_messages: Union[List[ChatMessage], str]) -> ChatMessage:
+        if isinstance(input_messages, str):
+            input_messages = [ChatMessage(message=input_messages, created_by=self.name, created_at=datetime.now(tz=timezone.utc))]
+        messages = [{"role": "system", "content": self.system_prompt}] if self.system_prompt else []
+        response = await acompletion(
+            model=self.model_hub_pair,
+            messages= messages + [
+                {"role": "user", "content": message.message} if message.created_by != self.name 
+                else {"role": "assistant", "content": message.message} 
+                for message in input_messages
+            ]
+        )
+        return response
+    
+    async def act(self, chat_room: ChatRoom) -> ChatMessage:
+        response = await self.chat(chat_room.messages[-self.chat_history_length:])
+        return ChatMessage(message=response['choices'][0]['message']['content'], created_by=self.name, created_at=datetime.now(tz=timezone.utc))
+
+            
+
+class PydanticLMAgent(YamlAgent):
     """
     An agent that uses a language model to generate a response. Maintains a chat history of its own messages.
     MUST HAVE:

@@ -2,7 +2,7 @@ import asyncio
 import time
 from tqdm import trange
 import yaml
-from agorama.models import ChatMessage, ChatRoom, LMAgent
+from agorama.models import ChatMessage, ChatRoom, LiteLLMAgent
 
 class YamlAgorama:
     """
@@ -16,7 +16,7 @@ class YamlAgorama:
         if "agents" not in loaded:
             raise ValueError("agents must be defined in the yaml file")
         
-        self.agents = [LMAgent(**agent_dict) for agent_dict in loaded["agents"]]
+        self.agents = [LiteLLMAgent(**agent_dict) for agent_dict in loaded["agents"]]
         
         self.chat_room = ChatRoom(room_name="Agorama")
 
