@@ -1,0 +1,10 @@
+agents:
+  - name: ReasoningAgent1
+    model_hub_pair: "gpt-3.5-turbo"
+    system_prompt: "You are a reasoning agent that decides whether to respond."
+  - name: ReasoningAgent2
+    model_hub_pair: "gpt-3.5-turbo"
+    system_prompt: "You are another reasoning agent that decides whether to respond."
+initial_state:
+  - message: "Should I respond to this message?"
+    created_by: "ReasoningAgent1"
