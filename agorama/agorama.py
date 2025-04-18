@@ -7,7 +7,8 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 from tqdm import trange
 import yaml
-from agorama.models import ChatMessage, ChatRoom, LiteLLMAgent
+from agorama.models import ChatMessage, ChatRoom
+from agorama.reasoning_agent import ReasoningAgent
 
 class YamlAgorama:
     """
@@ -21,12 +22,14 @@ class YamlAgorama:
         except FileNotFoundError:
             raise ValueError(f"YAML file {yaml_file} not found.")
         except yaml.YAMLError as e:
-            raise ValueError(f"Error parsing YAML file {yaml_file}: {e}")
+            logger.error(f"Error parsing YAML file {yaml_file}: {e}")
+            raise yaml.YAMLError(f"Error parsing YAML file {yaml_file}: {e}")
 
         if "agents" not in loaded:
             raise ValueError("agents must be defined in the yaml file")
         
-        self.agents = [LiteLLMAgent(**agent_dict) for agent_dict in loaded["agents"]]
+        self.agents = [ReasoningAgent(**agent_dict) for agent_dict in loaded["agents"] if "model_hub_pair" in agent_dict]
+# Ensure that the ReasoningAgent is used in the YamlAgorama class
         
         self.chat_room = ChatRoom(room_name="Agorama")
 
