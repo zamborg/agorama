@@ -59,7 +59,8 @@ class ChatRoom:
 
     @staticmethod
     def from_yaml(yaml_file: str) -> "ChatRoom":
-        yaml_data: dict = yaml.safe_load(open(yaml_file))
+        with open(yaml_file, 'r') as file:
+            yaml_data: dict = yaml.safe_load(file)
         return ChatRoom(
             room_name=yaml_data["room_name"],
             messages=[ChatMessage(**message) for message in yaml_data["messages"]]
@@ -87,13 +88,14 @@ class YamlAgent(BaseAgent):
     An agent that uses a yaml file to store its configuration
     """
     def __init__(self, yaml_file: str, name: Optional[str] = None):
-        loaded_yaml = yaml.safe_load(open(yaml_file))
+        with open(yaml_file, 'r') as file:
+            loaded_yaml = yaml.safe_load(file)
         if name is None and "name" not in loaded_yaml:
             raise Exception("Agent name must be provided in yaml or constructor")
         if name is not None and "name" in loaded_yaml:
-            print(f"Warning: {name=} provided in constructor will override yaml name: {loaded_yaml['name']}")
+            logger.warning(f"{name=} provided in constructor will override yaml name: {loaded_yaml['name']}")
         super().__init__(name or loaded_yaml["name"])
-        print("WARNING: THIS AGENT USES YAML.SAFE_LOAD and can be dangerous")
+        logger.warning("THIS AGENT USES YAML.SAFE_LOAD and can be dangerous")
         for key, value in loaded_yaml.items():
             setattr(self, key, value)
     
@@ -158,7 +160,7 @@ class PydanticLMAgent(YamlAgent):
             raise ValueError("Model must be provided in yaml or constructor")
         
         if getattr(self, "chat_history_length", None) is None:
-            print("WARNING: CHAT HISTORY LENGTH NOT SET IN YAML. USING DEFAULT OF 10.")
+            logger.warning("CHAT HISTORY LENGTH NOT SET IN YAML. USING DEFAULT OF 10.")
             self.chat_history_length = 10
 
         self.model_hub_pair = model_hub_pair or getattr(self, "model_hub_pair")
@@ -167,7 +169,7 @@ class PydanticLMAgent(YamlAgent):
         self.system_prompt = getattr(self, "system_prompt", None)
 
         if self.system_prompt is None:
-            print("SYSTEM PROMPT NOT SET IN YAML.")
+            logger.info("SYSTEM PROMPT NOT SET IN YAML.")
             self.ai = Agent(model=self.model_hub_pair)
         else:
             self.ai = Agent(model=self.model_hub_pair, system_prompt=self.system_prompt)

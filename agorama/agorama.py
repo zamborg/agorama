@@ -1,5 +1,10 @@
 import asyncio
 import time
+import logging
+
+# Set up basic logging configuration
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 from tqdm import trange
 import yaml
 from agorama.models import ChatMessage, ChatRoom, LiteLLMAgent
@@ -10,8 +15,13 @@ class YamlAgorama:
     Instantiated from a yaml file. This expcts all the agents to be `LMAgent`s
     """
     def __init__(self, yaml_file: str):
-        with open(yaml_file, "r") as f:
-            loaded = yaml.safe_load(f)
+        try:
+            with open(yaml_file, "r") as f:
+                loaded = yaml.safe_load(f)
+        except FileNotFoundError:
+            raise ValueError(f"YAML file {yaml_file} not found.")
+        except yaml.YAMLError as e:
+            raise ValueError(f"Error parsing YAML file {yaml_file}: {e}")
 
         if "agents" not in loaded:
             raise ValueError("agents must be defined in the yaml file")
