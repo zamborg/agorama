@@ -1,0 +1,10 @@
+agents:
+  - name: Agent1
+    model_hub_pair: "gpt-3.5-turbo"
+    system_prompt: "You are a friendly assistant."
+  - name: Agent2
+    model_hub_pair: "gpt-3.5-turbo"
+    system_prompt: "You are a curious user."
+initial_state:
+  - message: "Hello, how are you?"
+    created_by: "Agent1"

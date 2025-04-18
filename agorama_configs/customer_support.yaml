@@ -1,0 +1,10 @@
+agents:
+  - name: SupportAgent
+    model_hub_pair: "gpt-3.5-turbo"
+    system_prompt: "You are a customer support agent."
+  - name: Customer
+    model_hub_pair: "gpt-3.5-turbo"
+    system_prompt: "You are a customer with a problem."
+initial_state:
+  - message: "I need help with my order."
+    created_by: "Customer"

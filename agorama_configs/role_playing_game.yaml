@@ -1,0 +1,10 @@
+agents:
+  - name: GameMaster
+    model_hub_pair: "gpt-3.5-turbo"
+    system_prompt: "You are the game master in a fantasy role-playing game."
+  - name: Player
+    model_hub_pair: "gpt-3.5-turbo"
+    system_prompt: "You are a brave adventurer."
+initial_state:
+  - message: "You enter a dark cave. What do you do?"
+    created_by: "GameMaster"

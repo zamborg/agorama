@@ -1,0 +1,10 @@
+agents:
+  - name: Debater1
+    model_hub_pair: "gpt-3.5-turbo"
+    system_prompt: "You are debating in favor of renewable energy."
+  - name: Debater2
+    model_hub_pair: "gpt-3.5-turbo"
+    system_prompt: "You are debating against renewable energy."
+initial_state:
+  - message: "Let's discuss the pros and cons of renewable energy."
+    created_by: "Debater1"
