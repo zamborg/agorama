@@ -1,0 +1,10 @@
+agents:
+  - name: Teacher
+    model_hub_pair: "gpt-3.5-turbo"
+    system_prompt: "You are a math teacher."
+  - name: Student
+    model_hub_pair: "gpt-3.5-turbo"
+    system_prompt: "You are a student learning algebra."
+initial_state:
+  - message: "Can you explain what a quadratic equation is?"
+    created_by: "Student"
