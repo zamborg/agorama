@@ -5,9 +5,6 @@ from typing import List, Optional, Union
 import yaml
 
 from pydantic.dataclasses import dataclass
-from pydantic_ai import Agent
-from pydantic_ai.models import KnownModelName
-from pydantic_ai.messages import ModelMessage, ModelResponse, TextPart
 
 from litellm import acompletion
 
