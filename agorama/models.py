@@ -1,14 +1,20 @@
 from abc import ABC, abstractmethod
 from dataclasses import field, asdict
 from datetime import datetime, timezone
-from typing import List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 import yaml
 
 from pydantic.dataclasses import dataclass
+from pydantic_ai import Agent
+from pydantic_ai.models import KnownModelName
+from pydantic_ai.messages import ModelMessage, ModelResponse, TextPart
 
 from litellm import acompletion
+import logging
 
-    
+# Set up logger for this module
+logger = logging.getLogger(__name__)
+
 
 @dataclass
 class ChatMessage:
@@ -22,6 +28,12 @@ class ChatMessage:
 
     def __str__(self):
         return f"{self.created_by} : {self.message}"
+    
+    def to_oai_dict(self) -> Dict[str, Any]:
+        return {
+            "role": self.created_by,
+            "content": self.message,
+        }
     
     def to_model_response(self, model_name: Optional[str] = None) -> ModelResponse:
         return ModelResponse(
