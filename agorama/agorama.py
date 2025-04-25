@@ -13,6 +13,9 @@ from agorama.reasoning_agent import ReasoningAgent
 class YamlAgorama:
     # Existing implementation
 
+class JsonAgorama:
+    # Existing implementation
+
 class ReasoningYamlAgorama:
     """
     An Agorama is the runner for a chat room.
