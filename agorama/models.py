@@ -100,7 +100,7 @@ class YamlAgent(BaseAgent):
         with open(yaml_file, 'r') as file:
             loaded_yaml = yaml.safe_load(file)
         if name is None and "name" not in loaded_yaml:
-            raise Exception("Agent name must be provided in yaml or constructor")
+            raise ValueError("Agent name must be provided in yaml or constructor")
         if name is not None and "name" in loaded_yaml:
             logger.warning(f"{name=} provided in constructor will override yaml name: {loaded_yaml['name']}")
         super().__init__(name or loaded_yaml["name"])
